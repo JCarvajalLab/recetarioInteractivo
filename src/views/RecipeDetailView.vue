@@ -2,7 +2,7 @@
 <ItemNavbar />
 <div>
     <h1>
-        homeview
+        Listado Recetas
     </h1>
 </div>
 

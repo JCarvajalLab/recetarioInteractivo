@@ -2,7 +2,7 @@
 <ItemNavbar />
 <div>
     <h1>
-        homeview
+        Agregar Receta
     </h1>
 </div>
 
