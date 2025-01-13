@@ -42,10 +42,13 @@ export default createStore({
   },
   mutations: {
     agregarReceta(state, nuevaReceta) {
-      state.recetas.push(nuevaReceta);
-    },
+      state.recetas.push(nuevaReceta)
+    }
   },
   actions: {
+    agregarRecetaAction({ commit }, nuevaReceta) {
+      commit('agregarReceta', nuevaReceta)
+    }
   },
   modules: {
   }
