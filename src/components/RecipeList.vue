@@ -35,7 +35,7 @@
                                     <div class="text-truncate">{{ item.raw.dificultad }}</div>
                                 </div>
 
-                                <v-btn class="text-none" size="small" text="Detalles" border flat></v-btn>
+                                <v-btn class="text-none" size="small" text="Detalles" border flat @click="goToRecipeDetail(item.raw.id)"></v-btn>
                             </div>
                         </v-card>
                     </v-col>
@@ -69,6 +69,16 @@ export default {
             search: '',
             filterDificultad: 'all', // Valor inicial del filtro
         };
+    },
+    methods: {
+        goToRecipeDetail(recipeId) {
+            this.$router.push({
+                name: 'recipeDetailView',
+                params: {
+                    id: recipeId
+                }
+            });
+        }
     },
     computed: {
         ...mapState(['recetas']),
