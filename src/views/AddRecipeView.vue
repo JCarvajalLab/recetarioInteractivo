@@ -19,24 +19,26 @@
         </v-btn>
     </v-card>
 
-    <!-- Alerta de éxito -->
-    <v-alert v-if="mostrarAlerta" type="success" title="Receta Agregada" text="La receta fue agregada al listado. Si presenta algún problema y no puede visualizarla, favor contactarse a soporte técnico." class="mx-auto mt-6" max-width="448" closable @click:close="redirigirAHome"></v-alert>
+    <!-- Componente AlertDialog -->
+    <AlertDialog :dialog="dialog" @cerrar-dialog="cerrarDialog" />
 </div>
 <ItemFooter />
 </template>
 
 <script>
-import ItemNavbar from '../components/ItemNavbar.vue'
-import ItemFooter from '../components/ItemFooter.vue'
+import ItemNavbar from '../components/ItemNavbar.vue';
+import ItemFooter from '../components/ItemFooter.vue';
+import AlertDialog from '../components/AlertDialog.vue'; // Importar el componente AlertDialog
 import {
     mapActions
-} from 'vuex'
+} from 'vuex';
 
 export default {
     name: 'AddRecipeView',
     components: {
         ItemNavbar,
-        ItemFooter
+        ItemFooter,
+        AlertDialog // Registrar el componente AlertDialog
     },
     data() {
         return {
@@ -50,29 +52,54 @@ export default {
             },
             dificultades: ['Fácil', 'Media', 'Difícil'],
             tipos: ['Desayuno', 'Almuerzo', 'Cena', 'Postres'],
-            mostrarAlerta: false // Controla la visibilidad de la alerta
+            dialog: false // Controla la visibilidad del dialog
         }
     },
     methods: {
         ...mapActions(['agregarRecetaAction']),
-        agregarReceta() {
-            // Agregar la receta
-            this.nuevaReceta.id = Math.max(...this.$store.state.recetas.map(receta => receta.id)) + 1
-            this.agregarRecetaAction(this.nuevaReceta)
+        async agregarReceta() {
+            // Validar que todos los campos estén completos
+            if (!this.validarCampos()) {
+                alert("Por favor, complete todos los campos requeridos.");
+                return; // Detener la ejecución si falta algún campo
+            }
 
-            // Mostrar la alerta
-            this.mostrarAlerta = true
+            try {
+                // Asignar un ID único a la receta
+                this.nuevaReceta.id = Math.max(...this.$store.state.recetas.map(receta => receta.id)) + 1;
 
-            // Redirigir al home después de 5 segundos
-            setTimeout(() => {
-                this.redirigirAHome()
-            }, 5000)
+                // Agregar la receta usando Vuex
+                await this.agregarRecetaAction(this.nuevaReceta);
+
+                // Mostrar el dialog de éxito
+                this.dialog = true;
+            } catch (error) {
+                console.error("Error al agregar la receta:", error);
+                // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario
+            }
+        },
+        validarCampos() {
+            // Verificar que todos los campos tengan un valor
+            return (
+                this.nuevaReceta.nombre.trim() !== "" &&
+                this.nuevaReceta.dificultad.trim() !== "" &&
+                this.nuevaReceta.imagen.trim() !== "" &&
+                this.nuevaReceta.tipo.trim() !== "" &&
+                this.nuevaReceta.detalle.trim() !== ""
+            );
+        },
+        cerrarDialog() {
+            // Cerrar el dialog
+            this.dialog = false;
+
+            // Redirigir al home después de cerrar el dialog
+            this.redirigirAHome();
         },
         redirigirAHome() {
             // Redirigir al home
             this.$router.push({
                 name: 'home'
-            })
+            });
         }
     }
 }

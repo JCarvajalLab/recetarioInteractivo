@@ -35,7 +35,7 @@
                                     <div class="text-truncate">{{ item.raw.dificultad }}</div>
                                 </div>
 
-                                <v-btn class="text-none" size="small" text="Leer más" border flat></v-btn>
+                                <v-btn class="text-none" size="small" text="Detalles" border flat></v-btn>
                             </div>
                         </v-card>
                     </v-col>
